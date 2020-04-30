@@ -4,14 +4,10 @@ import com.it.springcloud.entity.CommonResult;
 import com.it.springcloud.entity.Payment;
 import com.it.springcloud.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -22,12 +18,6 @@ public class PaymentController {
 
     @Value("${server.port}")
     private String serverPort;
-
-    /**
-     * 服务发现，获取服务信息
-     */
-    @Autowired
-    private EurekaDiscoveryClient discoveryClient;
 
     /**
      * 只传给前端CommonResult，不需要前端了解其他的组件
@@ -57,21 +47,5 @@ public class PaymentController {
         }else{
             return new CommonResult(444, "没有对应记录,查询ID："+id, null);
         }
-    }
-
-    @GetMapping("payment/discovery")
-    public Object discovery() {
-        //所有的微服务
-        List<String> services = discoveryClient.getServices();
-        for (String element : services) {
-            log.info("element:\t" + element);
-        }
-
-        //一个微服务下的全部实例
-        List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
-        for (ServiceInstance instance : instances) {
-            log.info(instance.getServiceId() + "\t" + instance.getHost() + "\t" + instance.getPort() + "\t" + instance.getUri());
-        }
-        return this.discoveryClient;
     }
 }
