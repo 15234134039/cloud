@@ -1,8 +1,10 @@
 package com.it.springcloud.controller;
 
+
 import com.it.springcloud.entity.CommonResult;
 import com.it.springcloud.entity.Payment;
 import com.it.springcloud.service.PaymentService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
@@ -73,5 +76,15 @@ public class PaymentController {
             log.info(instance.getServiceId() + "\t" + instance.getHost() + "\t" + instance.getPort() + "\t" + instance.getUri());
         }
         return this.discoveryClient;
+    }
+
+    @GetMapping(value = "/payment/feign/timeout")
+    public String paymentFeignTimeout(){
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return serverPort;
     }
 }
